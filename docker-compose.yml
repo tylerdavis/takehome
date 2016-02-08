@@ -1,0 +1,55 @@
+version: '2'
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/rails.dockerfile
+    command: bundle exec rails s Puma -p 8080 -b '0.0.0.0'
+    ports:
+    - "80:8080"
+    links:
+      - redis:redis
+    networks:
+      - frontend
+      - backend
+    stop_signal: QUIT
+    volumes:
+      - .:/sp-takehome
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./docker/rails.dockerfile
+    command: bundle exec sidekiq -q default
+    links:
+      - redis
+    networks:
+      - backend
+    stop_signal: USR1
+    volumes:
+      - .:/sp-takehome
+
+  redis:
+    image: redis
+    networks:
+      - backend
+    stop_signal: SIGTERM
+
+  postgres:
+    image: postgres
+    networks:
+      - backend
+    stop_signal: SIGTERM
+    volumes:
+      - pg_data:/var/lib/postgresql/data:rw
+
+volumes:
+  pg_data: {}
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

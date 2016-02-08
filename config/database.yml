@@ -1,0 +1,20 @@
+development: &default
+  adapter: postgresql
+  host: postgres
+  port: 5432
+  database: sp
+  username: postgres
+  password: mysecretpassword
+  encoding: UTF8
+  min_messages: WARNING
+  pool: 1000
+
+test:
+  <<: *default
+  database: soundviz_test
+
+staging:
+  <<: *default
+
+production:
+  <<: *default
