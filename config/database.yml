@@ -11,7 +11,7 @@ development: &default
 
 test:
   <<: *default
-  database: soundviz_test
+  database: sp_test
 
 staging:
   <<: *default

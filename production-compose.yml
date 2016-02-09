@@ -6,8 +6,10 @@ services:
     extends:
       file: base-compose.yml
       service: api
-    volumes:
-      - .:/sp-takehome
+    command: bundle exec rails s Puma -p 8080 -b '0.0.0.0' -e production
+    environment:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: haha123sosecret
     networks:
       - frontend
       - backend
@@ -16,8 +18,8 @@ services:
     extends:
       file: base-compose.yml
       service: worker
-    volumes:
-      - .:/sp-takehome
+    environment:
+      RAILS_ENV: production
     networks:
       - backend
 
@@ -32,10 +34,10 @@ services:
     extends:
       file: base-compose.yml
       service: postgres
-    networks:
-      - backend
     volumes:
       - pg_data:/var/lib/postgresql/data:rw
+    networks:
+      - backend
 
 volumes:
   pg_data: {}
